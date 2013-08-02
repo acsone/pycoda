@@ -26,7 +26,8 @@ setup(
     zip_safe=False,
     include_package_data=True,
     install_requires=requires,
-    tests_require=requires + ['nose'],
+    setup_requires = ['nose'],
+    tests_require=requires + ['nose', 'coverage'],
     test_suite = 'nose.collector',
     classifiers=[
         'Development Status :: 3 - Alpha',

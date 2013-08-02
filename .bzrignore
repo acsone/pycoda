@@ -2,5 +2,6 @@
 *egg-info/
 dist/
 build/
-.coverage/
+.coverage
+.cover/
 COVERAGE
