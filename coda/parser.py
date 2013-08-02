@@ -27,6 +27,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #
 #
+
 import time
 
 
@@ -61,12 +62,10 @@ class Parser(object):
                 statements.append(statement)
                 statement['version'] = line[127]
                 if statement['version'] not in ['1', '2']:
-                    raise CodaParserException(
-                        ' R001', 'CODA V%s statements are not supported, please contact your bank' % statement['version'])
+                    raise CodaParserException(' R001', 'CODA V%s statements are not supported, please contact your bank' % statement['version'])
                 statement['globalisation_stack'] = []
                 statement['lines'] = []
-                statement['date'] = time.strftime(
-                    date_format, time.strptime(rmspaces(line[5:11]), '%d%m%y'))
+                statement['date'] = time.strftime(date_format, time.strptime(rmspaces(line[5:11]), '%d%m%y'))
                 statement['separateApplication'] = rmspaces(line[83:88])
             elif line[0] == '1':
                 # Statement details
@@ -78,27 +77,21 @@ class Parser(object):
                         statement['acc_number'] = rmspaces(line[5:17])
                         statement['currency'] = rmspaces(line[18:21])
                     elif line[1] == '1':  # foreign bank account BBAN structure
-                        raise CodaParserException(
-                            ' R1001', 'Foreign bank accounts with BBAN structure are not supported ')
+                        raise CodaParserException(' R1001', 'Foreign bank accounts with BBAN structure are not supported ')
                     elif line[1] == '2':  # Belgian bank account IBAN structure
                         statement['acc_number'] = rmspaces(line[5:21])
                         statement['currency'] = rmspaces(line[39:42])
                     elif line[1] == '3':  # foreign bank account IBAN structure
-                        raise CodaParserException(
-                            ' R1002', 'Foreign bank accounts with IBAN structure are not supported ')
+                        raise CodaParserException(' R1002', 'Foreign bank accounts with IBAN structure are not supported ')
                     else:  # Something else, not supported
-                        raise CodaParserException(
-                            ' R1003', 'Unsupported bank account structure ')
+                        raise CodaParserException(' R1003', 'Unsupported bank account structure ')
                 statement['journal_id'] = False
                 statement['bank_account'] = False
                 statement['description'] = rmspaces(line[90:125])
-                statement['balance_start'] = float(
-                    rmspaces(line[43:58])) / 1000
-                # 1 = Debit, the starting balance is negative
-                if line[42] == '1':
+                statement['balance_start'] = float(rmspaces(line[43:58])) / 1000
+                if line[42] == '1':  # 1 = Debit, the starting balance is negative
                     statement['balance_start'] = -statement['balance_start']
-                statement['balance_start_date'] = time.strftime(
-                    date_format, time.strptime(rmspaces(line[58:64]), '%d%m%y'))
+                statement['balance_start_date'] = time.strftime(date_format, time.strptime(rmspaces(line[58:64]), '%d%m%y'))
                 statement['accountHolder'] = rmspaces(line[64:90])
                 statement['paperSeqNumber'] = rmspaces(line[2:5])
                 statement['codaSeqNumber'] = rmspaces(line[125:128])
@@ -112,34 +105,28 @@ class Parser(object):
                     statementLine['sequence'] = len(statement['lines']) + 1
                     statementLine['transactionRef'] = rmspaces(line[10:31])
                     statementLine['debit'] = line[31]  # 0 = Credit, 1 = Debit
-                    statementLine['amount'] = float(
-                        rmspaces(line[32:47])) / 1000
+                    statementLine['amount'] = float(rmspaces(line[32:47])) / 1000
                     if statementLine['debit'] == '1':
                         statementLine['amount'] = -statementLine['amount']
                     statementLine['transaction_type'] = line[53]
-                    statementLine['transactionDate'] = time.strftime(
-                        date_format, time.strptime(rmspaces(line[47:53]), '%d%m%y'))
+                    statementLine['transactionDate'] = time.strftime(date_format, time.strptime(rmspaces(line[47:53]), '%d%m%y'))
                     statementLine['transaction_family'] = rmspaces(line[54:56])
                     statementLine['transaction_code'] = rmspaces(line[56:58])
-                    statementLine[
-                        'transaction_category'] = rmspaces(line[58:61])
+                    statementLine['transaction_category'] = rmspaces(line[58:61])
                     if line[61] == '1':
                         # Structured communication
                         statementLine['communication_struct'] = True
                         statementLine['communication_type'] = line[62:65]
-                        statementLine['communication'] = '+++' + line[
-                            65:68] + '/' + line[68:72] + '/' + line[72:77] + '+++'
+                        statementLine['communication'] = '+++' + line[65:68] + '/' + line[68:72] + '/' + line[72:77] + '+++'
                     else:
                         # Non-structured communication
                         statementLine['communication_struct'] = False
                         statementLine['communication'] = rmspaces(line[62:115])
-                    statementLine['entryDate'] = time.strftime(
-                        date_format, time.strptime(rmspaces(line[115:121]), '%d%m%y'))
+                    statementLine['entryDate'] = time.strftime(date_format, time.strptime(rmspaces(line[115:121]), '%d%m%y'))
                     statementLine['type'] = 'normal'
                     statementLine['globalisation'] = int(line[124])
                     if len(statement['globalisation_stack']) > 0 and statementLine['communication'] != '':
-                        statementLine['communication'] = "\n".join(
-                            [statement['globalisation_stack'][-1]['communication'], statementLine['communication']])
+                        statementLine['communication'] = "\n".join([statement['globalisation_stack'][-1]['communication'], statementLine['communication']])
                     if statementLine['globalisation'] > 0:
                         if len(statement['globalisation_stack']) > 0 and statement['globalisation_stack'][-1]['globalisation'] == statementLine['globalisation']:
                             # Destack
@@ -147,50 +134,34 @@ class Parser(object):
                         else:
                             # Stack
                             statementLine['type'] = 'globalisation'
-                            statement['globalisation_stack'].append(
-                                statementLine)
+                            statement['globalisation_stack'].append(statementLine)
                     statement['lines'].append(statementLine)
                 elif line[1] == '2':
                     if statement['lines'][-1]['ref'][0:4] != line[2:6]:
-                        raise CodaParserException(
-                            'R2004', 'CODA parsing error on movement data record 2.2, seq nr %s! Please report this issue via your OpenERP support channel.' % line[2:10])
-                    statement['lines'][-1][
-                        'communication'] += rmspaces(line[10:63])
-                    statement['lines'][-1][
-                        'payment_reference'] = rmspaces(line[63:98])
-                    statement['lines'][-1][
-                        'counterparty_bic'] = rmspaces(line[98:109])
+                        raise CodaParserException('R2004', 'CODA parsing error on movement data record 2.2, seq nr %s! Please report this issue via your OpenERP support channel.' % line[2:10])
+                    statement['lines'][-1]['communication'] += rmspaces(line[10:63])
+                    statement['lines'][-1]['payment_reference'] = rmspaces(line[63:98])
+                    statement['lines'][-1]['counterparty_bic'] = rmspaces(line[98:109])
                 elif line[1] == '3':
                     if statement['lines'][-1]['ref'][0:4] != line[2:6]:
-                        raise CodaParserException(
-                            'R2005', 'CODA parsing error on movement data record 2.3, seq nr %s! Please report this issue via your OpenERP support channel.' % line[2:10])
+                        raise CodaParserException('R2005', 'CODA parsing error on movement data record 2.3, seq nr %s! Please report this issue via your OpenERP support channel.' % line[2:10])
                     if statement['version'] == '1':
-                        statement['lines'][-1][
-                            'counterpartyNumber'] = rmspaces(line[10:22])
-                        statement['lines'][-1][
-                            'counterpartyName'] = rmspaces(line[47:73])
-                        statement['lines'][-1][
-                            'counterpartyAddress'] = rmspaces(line[73:125])
+                        statement['lines'][-1]['counterpartyNumber'] = rmspaces(line[10:22])
+                        statement['lines'][-1]['counterpartyName'] = rmspaces(line[47:73])
+                        statement['lines'][-1]['counterpartyAddress'] = rmspaces(line[73:125])
                         statement['lines'][-1]['counterpartyCurrency'] = ''
                     else:
                         if line[22] == ' ':
-                            statement['lines'][-1][
-                                'counterpartyNumber'] = rmspaces(line[10:22])
-                            statement['lines'][-1][
-                                'counterpartyCurrency'] = rmspaces(line[23:26])
+                            statement['lines'][-1]['counterpartyNumber'] = rmspaces(line[10:22])
+                            statement['lines'][-1]['counterpartyCurrency'] = rmspaces(line[23:26])
                         else:
-                            statement['lines'][-1][
-                                'counterpartyNumber'] = rmspaces(line[10:44])
-                            statement['lines'][-1][
-                                'counterpartyCurrency'] = rmspaces(line[44:47])
-                        statement['lines'][-1][
-                            'counterpartyName'] = rmspaces(line[47:82])
-                        statement['lines'][-1][
-                            'communication'] += rmspaces(line[82:125])
+                            statement['lines'][-1]['counterpartyNumber'] = rmspaces(line[10:44])
+                            statement['lines'][-1]['counterpartyCurrency'] = rmspaces(line[44:47])
+                        statement['lines'][-1]['counterpartyName'] = rmspaces(line[47:82])
+                        statement['lines'][-1]['communication'] += rmspaces(line[82:125])
                 else:
                     # movement data record 2.x (x != 1,2,3)
-                    raise CodaParserException(
-                        'R2006', '\nMovement data records of type 2.%s are not supported ' % line[1])
+                    raise CodaParserException('R2006', '\nMovement data records of type 2.%s are not supported ' % line[1])
             elif line[0] == '3':
                 if line[1] == '1':
                     infoLine = {}
@@ -207,16 +178,12 @@ class Parser(object):
                     statement['lines'].append(infoLine)
                 elif line[1] == '2':
                     if infoLine['ref'] != rmspaces(line[2:10]):
-                        raise CodaParserException(
-                            'R3004', 'CODA parsing error on information data record 3.2, seq nr %s! Please report this issue via your OpenERP support channel.' % line[2:10])
-                    statement['lines'][-1][
-                        'communication'] += rmspaces(line[10:100])
+                        raise CodaParserException('R3004', 'CODA parsing error on information data record 3.2, seq nr %s! Please report this issue via your OpenERP support channel.' % line[2:10])
+                    statement['lines'][-1]['communication'] += rmspaces(line[10:100])
                 elif line[1] == '3':
                     if infoLine['ref'] != rmspaces(line[2:10]):
-                        raise CodaParserException(
-                            'R3005', 'CODA parsing error on information data record 3.3, seq nr %s! Please report this issue via your OpenERP support channel.' % line[2:10])
-                    statement['lines'][-1][
-                        'communication'] += rmspaces(line[10:100])
+                        raise CodaParserException('R3005', 'CODA parsing error on information data record 3.3, seq nr %s! Please report this issue via your OpenERP support channel.' % line[2:10])
+                    statement['lines'][-1]['communication'] += rmspaces(line[10:100])
             elif line[0] == '4':
                     comm_line = {}
                     comm_line['type'] = 'communication'
@@ -228,19 +195,15 @@ class Parser(object):
                 # new balance record
                 statement['debit'] = line[41]
                 statement['paperSeqNumber'] = rmspaces(line[1:4])
-                statement['balance_end_real'] = float(
-                    rmspaces(line[42:57])) / 1000
-                statement['balance_end_realDate'] = time.strftime(
-                    date_format, time.strptime(rmspaces(line[57:63]), '%d%m%y'))
+                statement['balance_end_real'] = float(rmspaces(line[42:57])) / 1000
+                statement['balance_end_realDate'] = time.strftime(date_format, time.strptime(rmspaces(line[57:63]), '%d%m%y'))
                 if statement['debit'] == '1':  # 1=Debit
-                    statement['balance_end_real'] = -statement[
-                        'balance_end_real']
+                    statement['balance_end_real'] = -statement['balance_end_real']
             elif line[0] == '9':
                 statement['balanceMin'] = float(rmspaces(line[22:37])) / 1000
                 statement['balancePlus'] = float(rmspaces(line[37:52])) / 1000
                 if not statement.get('balance_end_real'):
-                    statement['balance_end_real'] = statement[
-                        'balance_start'] + statement['balancePlus'] - statement['balanceMin']
+                    statement['balance_end_real'] = statement['balance_start'] + statement['balancePlus'] - statement['balanceMin']
         return statements
 
 
