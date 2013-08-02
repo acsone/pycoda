@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-##############################################################################
+#
 #
 # Authors: Laurent Mignon & Stéphane Bidoul
 # Copyright (c) 2013 Acsone SA/NV (http://www.acsone.eu)
@@ -26,9 +26,10 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #
-##############################################################################
+#
 from coda.parser import Parser
 import os
+
 
 class TestParser(object):
 
@@ -38,8 +39,9 @@ class TestParser(object):
     def testTwo(self):
         parser = Parser()
         basepath = os.path.dirname(__file__)
-        f = open(os.path.join(basepath, "Dummy_testbestand_coda_iban_v2_3.txt")).read()
+        f = open(
+            os.path.join(basepath, "Dummy_testbestand_coda_iban_v2_3.txt")).read()
         statements = parser.parse(f)
-        assert len(statements) == 1        
-      
+        assert len(statements) == 1
+
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
