@@ -17,7 +17,7 @@ setup(
     author="Laurent Mignon (Acsone)",
     author_email="laurent.mignon__at __acsone.eu",
     description="Python library for Coded statement of account (CODA) ",
-    license="GNU Affero GPL v3",
+    license="GPLv3+",
     long_description='\n'.join((
         open('README.rst').read(),
         open('CHANGES.rst').read())),
@@ -34,7 +34,7 @@ setup(
         'Intended Audience :: Developers',
         'Intended Audience :: Financial and Insurance Industry',
         'Intended Audience :: Information Technology',
-        'License :: OSI Approved :: GNU Affero General Public License v3',
+        'License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)',
         'Topic :: Software Development :: Libraries :: Python Modules',
         'Topic :: Text Processing',
         'Topic :: Text Processing :: Markup'
