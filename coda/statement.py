@@ -28,7 +28,6 @@
 
 
 class AmountSign(object):
-
     CREDIT = "0"
     DEBIT = "1"
 
@@ -39,88 +38,89 @@ class MovementRecordType(object):
 
 
 class MovementRecord(object):
-
     """A movement record
     """
-    ref = None
-
-    # Continuous sequence number Starts at 0001 and is increased by 1 for
-    # each movement record referring to
-    # another movement on the daily statement
-    # of account.
-    ref_move = None
-
-    # Detail number for
-    # each movement record for the same
-    # continuous sequence number.
-    ref_move_detail = None
-    transaction_ref = None
-    transaction_amount = None
-    transaction_amount_sign = None
-    transaction_type = None
-    transaction_date = None
-    transaction_family = None
-    transaction_code = None
-    transaction_category = None
-    communication_is_structured = None
-    communication_type = None
-    communication = None
-    entry_date = None
-    type = None
-    globalisation_code = None
-    payment_reference = None
-    counterparty_bic = None
-    counterparty_number = None
-    counterparty_name = None
-    counterparty_address = None
-    counterparty_currency = None
+    def __init__(self):
+        self.ref = None
+    
+        # Continuous sequence number Starts at 0001 and is increased by 1 for
+        # each movement record referring to
+        # another movement on the daily statement
+        # of account.
+        self.ref_move = None
+    
+        # Detail number for
+        # each movement record for the same
+        # continuous sequence number.
+        self.ref_move_detail = None
+        self.transaction_ref = None
+        self.transaction_amount = None
+        self.transaction_amount_sign = None
+        self.transaction_type = None
+        self.transaction_date = None
+        self.transaction_family = None
+        self.transaction_code = None
+        self.transaction_category = None
+        self.communication_is_structured = None
+        self.communication_type = None
+        self.communication = None
+        self.entry_date = None
+        self.type = None
+        self.globalisation_code = None
+        self.payment_reference = None
+        self.counterparty_bic = None
+        self.counterparty_number = None
+        self.counterparty_name = None
+        self.counterparty_address = None
+        self.counterparty_currency = None
 
 
 class InformationRecord(object):
-
     """ Information record
     """
-    ref = None
-    transaction_ref = None
-    transaction_type = None
-    transaction_family = None
-    transaction_code = None
-    transaction_category = None
-    communication = None
+    
+    def __init__(self):
+        self.ref = None
+        self.transaction_ref = None
+        self.transaction_type = None
+        self.transaction_family = None
+        self.transaction_code = None
+        self.transaction_category = None
+        self.communication = None
 
 
 class FreeCommunication(object):
-
     """ Free communication
     """
-    ref = None
-    communication = None
+    def __init__(self):
+        self.ref = None
+        self.communication = None
 
 
 class Statement(object):
-
     """Statement of account
     """
 
-    creation_date = None
-    separate_application = None
-    version = None
-    acc_number = None
-    currency = None
-    description = None
-    old_balance = None
-    old_balance_amount_sign = None
-    old_balance_date = None
-    account_holder_name = None
-    paper_seq_number = None
-    coda_seq_number = None
-    new_balance = None
-    new_balance_amount_sign = None
-    new_balance_date = None
-    new_balance_paper_seq_number = None
-    movements = []
-    informations = []
-    free_comunications = []
+    def __init__(self):
+        self.creation_date = None
+        self.separate_application = None
+        self.version = None
+        self.acc_number = None
+        self.currency = None
+        self.description = None
+        self.old_balance = None
+        self.old_balance_amount_sign = None
+        self.old_balance_date = None
+        self.account_holder_name = None
+        self.paper_seq_number = None
+        self.coda_seq_number = None
+        self.new_balance = None
+        self.new_balance_amount_sign = None
+        self.new_balance_date = None
+        self.new_balance_paper_seq_number = None
+        self.movements = []
+        self.informations = []
+        self.free_comunications = []
 
 
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
