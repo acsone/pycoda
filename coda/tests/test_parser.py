@@ -76,7 +76,7 @@ class TestParser(object):
         eq_(movement.transaction_category, "000")
         eq_(movement.communication_is_structured, True)
         eq_(movement.communication_type, "114")
-        eq_(movement.communication, "+++931/3843/84900+++2905172259460041")
+        eq_(movement.communication, "+++931/3843/84900+++ 2905172259460041")
         eq_(movement.entry_date, '2009-03-05')
         eq_(movement.type, MovementRecordType.NORMAL)
         eq_(movement.globalisation_code, 0)

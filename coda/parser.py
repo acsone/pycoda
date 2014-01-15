@@ -145,7 +145,7 @@ class Parser(object):
             record.type = MovementRecordType.NORMAL
             record.globalisation_code = int(line[124])
             if len(globalisation_stack) > 0 and record.communication != '':
-                record.communication = "\n".join([globalisation_stack[-1].communication, record.communication])
+                record.communication = "\n".join(filter(None, [globalisation_stack[-1].communication, record.communication]))
             if record.globalisation_code > 0:
                 if len(globalisation_stack) > 0 and globalisation_stack[-1].globalisation_code == record.globalisation_code:
                     # Destack
@@ -159,7 +159,7 @@ class Parser(object):
             record = statement.movements[-1]
             if record.ref[0:4] != line[2:6]:
                 raise CodaParserException('R2004', 'CODA parsing error on movement data record 2.2, seq nr %s! Please report this issue via your OpenERP support channel.' % line[2:10])
-            record.communication += rmspaces(line[10:63])
+            record.communication = join_communications(record.communication, rmspaces(line[10:63]))
             record.payment_reference = rmspaces(line[63:98])
             record.counterparty_bic = rmspaces(line[98:109])
         elif line[1] == '3':
@@ -179,7 +179,7 @@ class Parser(object):
                     record.counterparty_number = rmspaces(line[10:44])
                     record.counterparty_currency = rmspaces(line[44:47])
                 record.counterparty_name = rmspaces(line[47:82])
-                record.communication += rmspaces(line[82:125])
+                record.communication = join_communications(record.communication, rmspaces(line[82:125]))
         else:
             # movement data record 2.x (x != 1,2,3)
             raise CodaParserException('R2006', '\nMovement data records of type 2.%s are not supported ' % line[1])
@@ -217,6 +217,16 @@ class Parser(object):
         comm_line.ref = rmspaces(line[2:10])
         comm_line.communication = rmspaces(line[32:112])
         statement.free_comunications.append(comm_line)
+
+
+def join_communications(c1, c2):
+    if not c1:
+        return c2
+    if not c2:
+         return c1 
+    if not c2.startswith(" "):
+        return " ".join([c1, c2])
+    return c1 + c2 
 
 
 def rmspaces(s):
