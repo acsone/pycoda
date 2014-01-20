@@ -58,10 +58,13 @@ class Parser(object):
     def parse(self, value):
         recordlist = unicode(value, 'windows-1252', 'strict').split('\n')
         statements = []
+        statement = None
+        globalisation_stack = []
         for line in recordlist:
             if not line:
                 pass
             elif line[0] == '0':
+                self.__fixes_not_closed_globalisation(statement, globalisation_stack)
                 # Begin of a new Bank statement
                 statement = Statement()
                 globalisation_stack = []
@@ -83,7 +86,17 @@ class Parser(object):
             elif line[0] == '9':
                 # trailer record
                 pass
+        self.__fixes_not_closed_globalisation(statement, globalisation_stack)
         return statements
+
+    def __fixes_not_closed_globalisation(self, statement, globalisation_stack):
+        """In some case, we received starting globalization line without closing line and
+        details. Change the movement type from globalisation to normal for thoses cases
+        """
+        if statement and len(globalisation_stack):
+            for mv in statement.movements:
+                if mv.type == MovementRecordType.GLOBALISATION:
+                    mv.type = MovementRecordType.NORMAL
 
     def _parseHeader(self, line, statement):
         statement.version = version = line[127]

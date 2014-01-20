@@ -31,15 +31,15 @@ from coda.statement import AmountSign, MovementRecordType
 from nose.tools import eq_
 import os
 
+BASEPATH = os.path.dirname(__file__)
 
 class TestParser(object):
 
     def testParser(self):
         parser = Parser()
-        basepath = os.path.dirname(__file__)
-        f = open(
-            os.path.join(basepath, "Dummy_testbestand_coda_iban_v2_3.txt")).read()
-        statements = parser.parse(f)
+        with open(os.path.join(BASEPATH, "Dummy_testbestand_coda_iban_v2_3.txt")) as f:
+            content = f.read()
+        statements = parser.parse(content)
         assert len(statements) == 1
         statement = statements[0]
         eq_(len(statement.movements), 32)
@@ -95,6 +95,22 @@ class TestParser(object):
         eq_(information.transaction_code, "01")
         eq_(information.transaction_category, "000")
         eq_(information.communication, "001AMERICAN EXPRESS")
+        
+    def test_wrong_globalisation(self):
+        """Test wrong globalisation
+        
+        Check that a globalisation line without the corresponding 'end globalisation'
+        is considered as Normal 
+        """
+        parser = Parser()
+        with open(os.path.join(BASEPATH, "Coda_v2_3_faulty_globalisation.txt")) as f:
+            content = f.read()
+        statements = parser.parse(content)
+        assert len(statements) == 1
+        statement = statements[0]
+        eq_(len(statement.movements), 11)
+        for mv in statement.movements:
+            eq_(mv.type, MovementRecordType.NORMAL)
 
 
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
