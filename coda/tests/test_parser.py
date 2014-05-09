@@ -35,13 +35,7 @@ BASEPATH = os.path.dirname(__file__)
 
 class TestParser(object):
 
-    def testParser(self):
-        parser = Parser()
-        with open(os.path.join(BASEPATH, "Dummy_testbestand_coda_iban_v2_3.txt")) as f:
-            content = f.read()
-        statements = parser.parse(content)
-        assert len(statements) == 1
-        statement = statements[0]
+    def _test_first_statement(self, statement):
         eq_(len(statement.movements), 32)
         eq_(len(statement.informations), 3)
         eq_(len(statement.free_comunications), 0)
@@ -63,6 +57,24 @@ class TestParser(object):
         eq_(statement.new_balance_paper_seq_number, "042")
         self._checkMovement(statement.movements[0])
         self._checkInformation(statement.informations[0])
+
+    def test_single_statemet_parsing(self):
+        parser = Parser()
+        with open(os.path.join(BASEPATH, "Coda_v2_3_single_statement.txt")) as f:
+            content = f.read()
+        statements = parser.parse(content)
+        assert len(statements) == 1
+        # the first statement is the same for single and multi-statements file
+        statement = statements[0]
+        self._test_first_statement(statement)
+
+    def test_multi_statemets_parsing(self):
+        parser = Parser()
+        with open(os.path.join(BASEPATH, "Coda_v2_3_multi_statements.txt")) as f:
+            content = f.read()
+        statements = parser.parse(content)
+        assert len(statements) == 2
+        self._test_first_statement(statements[0])
 
     def _checkMovement(self, movement):
         eq_(movement.ref_move_detail, "0000")
@@ -111,6 +123,4 @@ class TestParser(object):
         eq_(len(statement.movements), 11)
         for mv in statement.movements:
             eq_(mv.type, MovementRecordType.NORMAL)
-
-
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
