@@ -1,5 +1,5 @@
 [![Build Status](https://travis-ci.org/acsone/pycoda.svg?branch=master)](https://travis-ci.org/acsone/pycoda)
-[![Coverage Status](https://img.shields.io/coveralls/acsone/pycoda.svg)](https://coveralls.io/r/acsone/pycoda?branch=master)
+[![Coverage Status](https://coveralls.io/repos/acsone/pycoda/badge.png?branch=master)](https://coveralls.io/r/acsone/pycoda?branch=master)
 
 pycoda
 ======
