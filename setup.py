@@ -19,7 +19,7 @@ setup(
     description="Python library for Coded statement of account (CODA) ",
     license="GPLv3+",
     long_description='\n'.join((
-        open('README.rst').read(),
+        open('README.md').read(),
         open('CHANGES.rst').read())),
     url="https://launchpad.net/pycoda",
     packages=find_packages(),
