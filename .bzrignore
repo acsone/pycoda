@@ -1,7 +1,0 @@
-*.egg/
-*egg-info/
-dist/
-build/
-.coverage
-.cover/
-COVERAGE
