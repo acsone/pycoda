@@ -5,9 +5,11 @@ python:
 install:
   - pip install .
   - pip install coveralls
+  - pip install flake8
 
 # command to run tests
-script: 
+script:
+  - flake8 . --max-line-length=120 --exclude=__init__.py
   - nosetests -v --with-coverage --cover-tests
 
 after_success:
