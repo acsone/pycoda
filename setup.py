@@ -12,12 +12,11 @@ if sys.version_info < (2, 6):
 requires = []
 
 setup(
-    name="pycoda",
+    name='pycoda',
     version=version,
     author='ACSONE SA/NV',
     author_email='laurent.mignon__at__acsone.eu',
     description="Python library for Coded statement of account (CODA) ",
-    license="GPLv3+",
     long_description='\n'.join((
         open('README.rst').read(),
         open('CHANGES.rst').read())),
@@ -37,6 +36,7 @@ setup(
         'License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)',
         'Topic :: Software Development :: Libraries :: Python Modules',
         'Topic :: Text Processing',
-        'Topic :: Text Processing :: Markup'
+        'Topic :: Text Processing :: Markup',
+        'Programming Language :: Python :: 2',
     ],
 )
