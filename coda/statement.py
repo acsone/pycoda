@@ -40,15 +40,16 @@ class MovementRecordType(object):
 class MovementRecord(object):
     """A movement record
     """
+
     def __init__(self):
         self.ref = None
-    
+
         # Continuous sequence number Starts at 0001 and is increased by 1 for
         # each movement record referring to
         # another movement on the daily statement
         # of account.
         self.ref_move = None
-    
+
         # Detail number for
         # each movement record for the same
         # continuous sequence number.
@@ -78,7 +79,7 @@ class MovementRecord(object):
 class InformationRecord(object):
     """ Information record
     """
-    
+
     def __init__(self):
         self.ref = None
         self.transaction_ref = None

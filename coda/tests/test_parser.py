@@ -33,6 +33,7 @@ import os
 
 BASEPATH = os.path.dirname(__file__)
 
+
 class TestParser(object):
 
     def _test_first_statement(self, statement):
@@ -107,12 +108,12 @@ class TestParser(object):
         eq_(information.transaction_code, "01")
         eq_(information.transaction_category, "000")
         eq_(information.communication, "001AMERICAN EXPRESS")
-        
+
     def test_wrong_globalisation(self):
         """Test wrong globalisation
-        
+
         Check that a globalisation line without the corresponding 'end globalisation'
-        is considered as Normal 
+        is considered as Normal
         """
         parser = Parser()
         with open(os.path.join(BASEPATH, "Coda_v2_3_faulty_globalisation.txt")) as f:

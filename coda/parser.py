@@ -64,7 +64,8 @@ class Parser(object):
             if not line:
                 pass
             elif line[0] == '0':
-                self.__fixes_not_closed_globalisation(statement, globalisation_stack)
+                self.__fixes_not_closed_globalisation(
+                    statement, globalisation_stack)
                 # Begin of a new Bank statement
                 statement = Statement()
                 globalisation_stack = []
@@ -101,8 +102,10 @@ class Parser(object):
     def _parseHeader(self, line, statement):
         statement.version = version = line[127]
         if version not in ['1', '2']:
-            raise CodaParserException(' R001', 'CODA V%s statements are not supported, please contact your bank' % statement['version'])
-        statement.creation_date = time.strftime(self.date_format, time.strptime(rmspaces(line[5:11]), '%d%m%y'))
+            raise CodaParserException(
+                ' R001', 'CODA V%s statements are not supported, please contact your bank' % statement['version'])
+        statement.creation_date = time.strftime(
+            self.date_format, time.strptime(rmspaces(line[5:11]), '%d%m%y'))
         statement.separate_application = rmspaces(line[83:88])
 
     def _parseHeaderDetails(self, line, statement):
@@ -114,19 +117,23 @@ class Parser(object):
                 statement.acc_number = rmspaces(line[5:17])
                 statement.currency = rmspaces(line[18:21])
             elif line[1] == '1':  # foreign bank account BBAN structure
-                raise CodaParserException(' R1001', 'Foreign bank accounts with BBAN structure are not supported ')
+                raise CodaParserException(
+                    ' R1001', 'Foreign bank accounts with BBAN structure are not supported ')
             elif line[1] == '2':  # Belgian bank account IBAN structure
                 statement.acc_number = rmspaces(line[5:21])
                 statement.currency = rmspaces(line[39:42])
             elif line[1] == '3':  # foreign bank account IBAN structure
-                raise CodaParserException(' R1002', 'Foreign bank accounts with IBAN structure are not supported ')
+                raise CodaParserException(
+                    ' R1002', 'Foreign bank accounts with IBAN structure are not supported ')
             else:  # Something else, not supported
-                raise CodaParserException(' R1003', 'Unsupported bank account structure ')
+                raise CodaParserException(
+                    ' R1003', 'Unsupported bank account structure ')
 
         statement.description = rmspaces(line[90:125])
         statement.old_balance = float(rmspaces(line[43:58])) / 1000
         statement.old_balance_amount_sign = line[42]
-        statement.old_balance_date = time.strftime(self.date_format, time.strptime(rmspaces(line[58:64]), '%d%m%y'))
+        statement.old_balance_date = time.strftime(
+            self.date_format, time.strptime(rmspaces(line[58:64]), '%d%m%y'))
         statement.account_holder_name = rmspaces(line[64:90])
         statement.paper_seq_number = rmspaces(line[2:5])
         statement.coda_seq_number = rmspaces(line[125:128])
@@ -142,7 +149,8 @@ class Parser(object):
             record.transaction_amount_sign = line[31]  # 0 = Credit, 1 = Debit
             record.transaction_amount = float(rmspaces(line[32:47])) / 1000
             record.transaction_type = line[53]
-            record.transaction_date = time.strftime(self.date_format, time.strptime(rmspaces(line[47:53]), '%d%m%y'))
+            record.transaction_date = time.strftime(
+                self.date_format, time.strptime(rmspaces(line[47:53]), '%d%m%y'))
             record.transaction_family = rmspaces(line[54:56])
             record.transaction_code = rmspaces(line[56:58])
             record.transaction_category = rmspaces(line[58:61])
@@ -150,17 +158,21 @@ class Parser(object):
             if record.communication_is_structured:
                 # Structured communication
                 record.communication_type = line[62:65]
-                record.communication = '+++' + line[65:68] + '/' + line[68:72] + '/' + line[72:77] + '+++'
+                record.communication = '+++' + \
+                    line[65:68] + '/' + line[68:72] + '/' + line[72:77] + '+++'
             else:
                 # Non-structured communication
                 record.communication = rmspaces(line[62:115])
-            record.entry_date = time.strftime(self.date_format, time.strptime(rmspaces(line[115:121]), '%d%m%y'))
+            record.entry_date = time.strftime(
+                self.date_format, time.strptime(rmspaces(line[115:121]), '%d%m%y'))
             record.type = MovementRecordType.NORMAL
             record.globalisation_code = int(line[124])
             if len(globalisation_stack) > 0 and record.communication != '':
-                record.communication = "\n".join(filter(None, [globalisation_stack[-1].communication, record.communication]))
+                record.communication = "\n".join(
+                    filter(None, [globalisation_stack[-1].communication, record.communication]))
             if record.globalisation_code > 0:
-                if len(globalisation_stack) > 0 and globalisation_stack[-1].globalisation_code == record.globalisation_code:
+                if len(globalisation_stack) > 0 and \
+                   globalisation_stack[-1].globalisation_code == record.globalisation_code:
                     # Destack
                     globalisation_stack.pop()
                 else:
@@ -171,14 +183,19 @@ class Parser(object):
         elif line[1] == '2':
             record = statement.movements[-1]
             if record.ref[0:4] != line[2:6]:
-                raise CodaParserException('R2004', 'CODA parsing error on movement data record 2.2, seq nr %s! Please report this issue via your OpenERP support channel.' % line[2:10])
-            record.communication = join_communications(record.communication, rmspaces(line[10:63]))
+                raise CodaParserException(
+                    'R2004', 'CODA parsing error on movement data record 2.2, seq nr %s!'
+                    ' Please report this issue via your OpenERP support channel.' % line[2:10])
+            record.communication = join_communications(
+                record.communication, rmspaces(line[10:63]))
             record.payment_reference = rmspaces(line[63:98])
             record.counterparty_bic = rmspaces(line[98:109])
         elif line[1] == '3':
             record = statement.movements[-1]
             if record.ref[0:4] != line[2:6]:
-                raise CodaParserException('R2005', 'CODA parsing error on movement data record 2.3, seq nr %s! Please report this issue via your OpenERP support channel.' % line[2:10])
+                raise CodaParserException(
+                    'R2005', 'CODA parsing error on movement data record 2.3, seq nr %s!'
+                    ' Please report this issue via your OpenERP support channel.' % line[2:10])
             if statement.version == '1':
                 record.counterparty_number = rmspaces(line[10:22])
                 record.counterparty_name = rmspaces(line[47:73])
@@ -192,10 +209,12 @@ class Parser(object):
                     record.counterparty_number = rmspaces(line[10:44])
                     record.counterparty_currency = rmspaces(line[44:47])
                 record.counterparty_name = rmspaces(line[47:82])
-                record.communication = join_communications(record.communication, rmspaces(line[82:125]))
+                record.communication = join_communications(
+                    record.communication, rmspaces(line[82:125]))
         else:
             # movement data record 2.x (x != 1,2,3)
-            raise CodaParserException('R2006', '\nMovement data records of type 2.%s are not supported ' % line[1])
+            raise CodaParserException(
+                'R2006', '\nMovement data records of type 2.%s are not supported ' % line[1])
 
     def _parseInformationRecord(self, line, statement):
         if line[1] == '1':
@@ -211,19 +230,24 @@ class Parser(object):
         elif line[1] == '2':
             infoLine = statement.informations[-1]
             if infoLine.ref != rmspaces(line[2:10]):
-                raise CodaParserException('R3004', 'CODA parsing error on information data record 3.2, seq nr %s! Please report this issue via your OpenERP support channel.' % line[2:10])
+                raise CodaParserException(
+                    'R3004', 'CODA parsing error on information data record 3.2, seq nr %s!'
+                    ' Please report this issue via your OpenERP support channel.' % line[2:10])
             infoLine.communication += rmspaces(line[10:100])
         elif line[1] == '3':
             infoLine = statement.informations[-1]
             if infoLine['ref'] != rmspaces(line[2:10]):
-                raise CodaParserException('R3005', 'CODA parsing error on information data record 3.3, seq nr %s! Please report this issue via your OpenERP support channel.' % line[2:10])
+                raise CodaParserException(
+                    'R3005', 'CODA parsing error on information data record 3.3, seq nr %s!'
+                    ' Please report this issue via your OpenERP support channel.' % line[2:10])
             infoLine.communication += rmspaces(line[10:100])
 
     def _parseNewBalanceRecord(self, line, statement):
         statement.new_balance_amount_sign = line[41]
         statement.new_balance_paper_seq_number = rmspaces(line[1:4])
         statement.new_balance = float(rmspaces(line[42:57])) / 1000
-        statement.new_balance_date = time.strftime(self.date_format, time.strptime(rmspaces(line[57:63]), '%d%m%y'))
+        statement.new_balance_date = time.strftime(
+            self.date_format, time.strptime(rmspaces(line[57:63]), '%d%m%y'))
 
     def parseFreeCommunication(self, line, statement):
         comm_line = FreeCommunication()
@@ -236,10 +260,10 @@ def join_communications(c1, c2):
     if not c1:
         return c2
     if not c2:
-         return c1 
+        return c1
     if not c2.startswith(" "):
         return " ".join([c1, c2])
-    return c1 + c2 
+    return c1 + c2
 
 
 def rmspaces(s):
