@@ -16,8 +16,6 @@ A python library for parsing CODA files
 - Code repository: http://github.com/acsone/pycoda
 - Report bugs at http://github.com/acsone/pycoda/issues
 
-The parsing algorythm is based on a code originally part of an openerp module wittren by Noviat nv/sa (www.noviat.be). 
-
 Authors:
 
  * Laurent Mignon (ACSONE)
