@@ -2,7 +2,7 @@ import os
 import sys
 from setuptools import setup, find_packages
 
-version = '0.1dev'
+version = '0.1'
 
 if sys.version_info < (2, 6):
     sys.stderr.write("This package requires Python 2.6 or newer. "
@@ -14,14 +14,14 @@ requires = []
 setup(
     name="pycoda",
     version=version,
-    author="Laurent Mignon (Acsone)",
-    author_email="laurent.mignon__at __acsone.eu",
+    author='ACSONE SA/NV',
+    author_email='laurent.mignon__at__acsone.eu',
     description="Python library for Coded statement of account (CODA) ",
     license="GPLv3+",
     long_description='\n'.join((
-        open('README.md').read(),
+        open('README.rst').read(),
         open('CHANGES.rst').read())),
-    url="https://launchpad.net/pycoda",
+    url="http://pypi.python.org/pypi/pycoda",
     packages=find_packages(),
     zip_safe=False,
     include_package_data=True,
@@ -30,7 +30,7 @@ setup(
     tests_require=requires + ['nose', 'coverage'],
     test_suite = 'nose.collector',
     classifiers=[
-        'Development Status :: 3 - Alpha',
+        'Development Status :: 5 - Production/Stable',
         'Intended Audience :: Developers',
         'Intended Audience :: Financial and Insurance Industry',
         'Intended Audience :: Information Technology',
