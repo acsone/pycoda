@@ -7,6 +7,9 @@ pycoda
     :target: https://travis-ci.org/acsone/pycoda
 .. image:: https://coveralls.io/repos/acsone/pycoda/badge.png?branch=master 
     :target: https://coveralls.io/r/acsone/pycoda?branch=master
+.. image:: https://pypip.in/license/pycoda/badge.png
+    :target: https://pypi.python.org/pypi/pycoda/
+    :alt: License
 
 A python library for parsing CODA files
 
