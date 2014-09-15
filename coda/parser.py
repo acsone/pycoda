@@ -103,7 +103,7 @@ class Parser(object):
         statement.version = version = line[127]
         if version not in ['1', '2']:
             raise CodaParserException(
-                ' R001', 'CODA V%s statements are not supported, please contact your bank' % statement['version'])
+                ' R001', 'CODA V%s statements are not supported, please contact your bank' % statement.version)
         statement.creation_date = time.strftime(
             self.date_format, time.strptime(rmspaces(line[5:11]), '%d%m%y'))
         statement.separate_application = rmspaces(line[83:88])
