@@ -26,9 +26,9 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #
 #
-from coda.parser import Parser
+from coda.parser import Parser, CodaParserException
 from coda.statement import AmountSign, MovementRecordType
-from nose.tools import eq_
+from nose.tools import eq_, assert_raises
 import os
 
 BASEPATH = os.path.dirname(__file__)
@@ -124,4 +124,14 @@ class TestParser(object):
         eq_(len(statement.movements), 11)
         for mv in statement.movements:
             eq_(mv.type, MovementRecordType.NORMAL)
+
+    def test_unsupported_version(self):
+        parser = Parser()
+        with open(os.path.join(BASEPATH, "Coda_faulty_version.txt")) as f:
+            content = f.read()
+        with assert_raises(CodaParserException) as cm:
+            parser.parse(content)
+        eq_(cm.exception.code, ' R001')
+        eq_(cm.exception.msg, 'CODA V5 statements are not supported, please contact your bank')
+
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
