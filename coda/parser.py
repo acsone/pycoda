@@ -236,7 +236,7 @@ class Parser(object):
             infoLine.communication += rmspaces(line[10:100])
         elif line[1] == '3':
             infoLine = statement.informations[-1]
-            if infoLine['ref'] != rmspaces(line[2:10]):
+            if infoLine.ref != rmspaces(line[2:10]):
                 raise CodaParserException(
                     'R3005', 'CODA parsing error on information data record 3.3, seq nr %s!'
                     ' Please report this issue via your OpenERP support channel.' % line[2:10])
