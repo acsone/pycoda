@@ -141,6 +141,31 @@ class TestParser(object):
         for mv in statement.movements:
             eq_(mv.type, MovementRecordType.NORMAL)
 
+    def test_globalisation(self):
+        """Test that a globalisation line with details is considerd as
+        Globalisation and its details as Normal
+        """
+        parser = Parser()
+        with open(os.path.join(BASEPATH, "Coda_v2_3_globalisation.txt")) as f:
+            content = f.read()
+        statements = parser.parse(content)
+        assert len(statements) == 1
+        statement = statements[0]
+        eq_(len(statement.movements), 5)
+        for idx, mv in enumerate(statement.movements):
+            if idx == 2:
+                eq_(mv.type, MovementRecordType.GLOBALISATION)
+            else:
+                eq_(mv.type, MovementRecordType.NORMAL)
+        with open(os.path.join(BASEPATH, "Coda_v2_3_globalisation_2.txt")) as f:
+            content = f.read()
+        statements = parser.parse(content)
+        assert len(statements) == 1
+        statement = statements[0]
+        eq_(len(statement.movements), 4)
+        for mv in statement.movements:
+            eq_(mv.type, MovementRecordType.NORMAL)
+
     def test_unsupported_version(self):
         parser = Parser()
         with open(os.path.join(BASEPATH, "Coda_faulty_version.txt")) as f:

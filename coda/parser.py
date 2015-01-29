@@ -165,7 +165,7 @@ class Parser(object):
                 self.date_format, time.strptime(rmspaces(line[115:121]), '%d%m%y'))
             record.type = MovementRecordType.NORMAL
 
-            if record.transaction_type in [1, 2]:
+            if record.transaction_type in [1, 2, 3]:
                 # here the transaction type is a globalisation
                 # 1 is for globalisation from the customer
                 # 2 is for globalisation from the bank
@@ -180,7 +180,7 @@ class Parser(object):
             # record.type to Normal
             prev_mvmt = statement.movements and statement.movements[-1] or None
             if prev_mvmt and \
-                record.transaction_type < 3 and \
+                record.transaction_type < 4 and \
                     prev_mvmt.type == MovementRecordType.GLOBALISATION:
                 prev_mvmt.type = MovementRecordType.NORMAL
             record.globalisation_code = int(line[124])
