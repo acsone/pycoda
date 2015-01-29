@@ -59,16 +59,14 @@ class Parser(object):
         recordlist = unicode(value, 'windows-1252', 'strict').split('\n')
         statements = []
         statement = None
-        globalisation_stack = []
         for line in recordlist:
             if not line:
                 pass
             elif line[0] == '0':
-                self.__fixes_not_closed_globalisation(
-                    statement, globalisation_stack)
+                self.__fixes_globalisation_without_details(
+                    statement)
                 # Begin of a new Bank statement
                 statement = Statement()
-                globalisation_stack = []
                 self._parseHeader(line, statement)
                 statements.append(statement)
 
@@ -76,7 +74,7 @@ class Parser(object):
                 # Statement details
                 self._parseHeaderDetails(line, statement)
             elif line[0] == '2':
-                self._parseMovementRecord(line, statement, globalisation_stack)
+                self._parseMovementRecord(line, statement)
             elif line[0] == '3':
                 self._parseInformationRecord(line, statement)
             elif line[0] == '4':
@@ -87,17 +85,17 @@ class Parser(object):
             elif line[0] == '9':
                 # trailer record
                 pass
-        self.__fixes_not_closed_globalisation(statement, globalisation_stack)
+        self.__fixes_globalisation_without_details(statement)
         return statements
 
-    def __fixes_not_closed_globalisation(self, statement, globalisation_stack):
-        """In some case, we received starting globalization line without closing line and
-        details. Change the movement type from globalisation to normal for thoses cases
+    def __fixes_globalisation_without_details(self, statement):
+        """ Change the movement type from globalisation to normal for the last
+        movements
         """
-        if statement and len(globalisation_stack):
-            for mv in statement.movements:
-                if mv.type == MovementRecordType.GLOBALISATION:
-                    mv.type = MovementRecordType.NORMAL
+        if statement and statement.movements:
+            mv = statement.movements[-1]
+            if mv.type == MovementRecordType.GLOBALISATION:
+                mv.type = MovementRecordType.NORMAL
 
     def _parseHeader(self, line, statement):
         statement.version = version = line[127]
@@ -138,7 +136,7 @@ class Parser(object):
         statement.paper_seq_number = rmspaces(line[2:5])
         statement.coda_seq_number = rmspaces(line[125:128])
 
-    def _parseMovementRecord(self, line, statement, globalisation_stack):
+    def _parseMovementRecord(self, line, statement):
         if line[1] == '1':
             # New statement line
             record = MovementRecord()
@@ -148,7 +146,7 @@ class Parser(object):
             record.transaction_ref = rmspaces(line[10:31])
             record.transaction_amount_sign = line[31]  # 0 = Credit, 1 = Debit
             record.transaction_amount = float(rmspaces(line[32:47])) / 1000
-            record.transaction_type = line[53]
+            record.transaction_type = int(line[53])
             record.transaction_date = time.strftime(
                 self.date_format, time.strptime(rmspaces(line[47:53]), '%d%m%y'))
             record.transaction_family = rmspaces(line[54:56])
@@ -166,19 +164,26 @@ class Parser(object):
             record.entry_date = time.strftime(
                 self.date_format, time.strptime(rmspaces(line[115:121]), '%d%m%y'))
             record.type = MovementRecordType.NORMAL
+
+            if record.transaction_type in [1, 2]:
+                # here the transaction type is a globalisation
+                # 1 is for globalisation from the customer
+                # 2 is for globalisation from the bank
+                record.type = MovementRecordType.GLOBALISATION
+
+            # a globalisation record can be followed by details lines
+            # if it's not the case, the globalisation record is considered
+            # as normal. To determine if a globalisation record is followed
+            # by details, on a new line starting with 21, we check if the
+            # previous line is a globalisation record. If the current line is
+            # not a details line (transaction_type > 3) we reset the
+            # record.type to Normal
+            prev_mvmt = statement.movements and statement.movements[-1] or None
+            if prev_mvmt and \
+                record.transaction_type < 3 and \
+                    prev_mvmt.type == MovementRecordType.GLOBALISATION:
+                prev_mvmt.type = MovementRecordType.NORMAL
             record.globalisation_code = int(line[124])
-            if len(globalisation_stack) > 0 and record.communication != '':
-                record.communication = "\n".join(
-                    filter(None, [globalisation_stack[-1].communication, record.communication]))
-            if record.globalisation_code > 0:
-                if len(globalisation_stack) > 0 and \
-                   globalisation_stack[-1].globalisation_code == record.globalisation_code:
-                    # Destack
-                    globalisation_stack.pop()
-                else:
-                    # Stack
-                    record.type = MovementRecordType.GLOBALISATION
-                    globalisation_stack.append(record)
             statement.movements.append(record)
         elif line[1] == '2':
             record = statement.movements[-1]

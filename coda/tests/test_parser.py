@@ -82,7 +82,7 @@ class TestParser(object):
         eq_(movement.transaction_ref, "SWJVZ0BN6 BKTBBNPOSKZ")
         eq_(movement.transaction_amount, 20.0)
         eq_(movement.transaction_amount_sign,  AmountSign.CREDIT)
-        eq_(movement.transaction_type, "0")
+        eq_(movement.transaction_type, 0)
         eq_(movement.transaction_date, '2009-03-05')
         eq_(movement.transaction_family, "04")
         eq_(movement.transaction_code, "50")
@@ -122,6 +122,22 @@ class TestParser(object):
         assert len(statements) == 1
         statement = statements[0]
         eq_(len(statement.movements), 11)
+        for mv in statement.movements:
+            eq_(mv.type, MovementRecordType.NORMAL)
+
+    def test_wrong_globalisation_2(self):
+        """Test wrong globalisation
+
+        Check that a globalisation line without details
+        is considered as Normal (file contains only globalisation statemnts)
+        """
+        parser = Parser()
+        with open(os.path.join(BASEPATH, "Coda_v2_3_faulty_globalisation_2.txt")) as f:
+            content = f.read()
+        statements = parser.parse(content)
+        assert len(statements) == 1
+        statement = statements[0]
+        eq_(len(statement.movements), 2)
         for mv in statement.movements:
             eq_(mv.type, MovementRecordType.NORMAL)
 
