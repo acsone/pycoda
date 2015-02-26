@@ -1,10 +1,14 @@
 Changes
 ~~~~~~~
 
-0.4 (unreleased)
+0.4 (2015-02-26)
 ----------------
 
-- ...
+- `github ISSUE3 <https://github.com/acsone/pycoda/issues/3>`_:
+  Globalisation lines are considered as Normal if they are not
+  followed by details lines. The transaction type is now used
+  to detect the details lines.
+
 
 0.3 (2015-01-15)
 ----------------
