@@ -33,7 +33,8 @@ setup(
         'Intended Audience :: Developers',
         'Intended Audience :: Financial and Insurance Industry',
         'Intended Audience :: Information Technology',
-        'License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)',
+        'License :: OSI Approved :: '
+        'GNU General Public License v3 or later (GPLv3+)',
         'Topic :: Software Development :: Libraries :: Python Modules',
         'Topic :: Text Processing',
         'Topic :: Text Processing :: Markup',

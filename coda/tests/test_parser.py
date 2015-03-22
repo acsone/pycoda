@@ -61,7 +61,8 @@ class TestParser(object):
 
     def test_single_statemet_parsing(self):
         parser = Parser()
-        with open(os.path.join(BASEPATH, "Coda_v2_3_single_statement.txt")) as f:
+        with open(os.path.join(BASEPATH,
+                               "Coda_v2_3_single_statement.txt")) as f:
             content = f.read()
         statements = parser.parse(content)
         assert len(statements) == 1
@@ -71,7 +72,8 @@ class TestParser(object):
 
     def test_multi_statemets_parsing(self):
         parser = Parser()
-        with open(os.path.join(BASEPATH, "Coda_v2_3_multi_statements.txt")) as f:
+        with open(os.path.join(BASEPATH,
+                               "Coda_v2_3_multi_statements.txt")) as f:
             content = f.read()
         statements = parser.parse(content)
         assert len(statements) == 2
@@ -112,11 +114,12 @@ class TestParser(object):
     def test_wrong_globalisation(self):
         """Test wrong globalisation
 
-        Check that a globalisation line without the corresponding 'end globalisation'
-        is considered as Normal
+        Check that a globalisation line without the corresponding
+        'end globalisation' is considered as Normal
         """
         parser = Parser()
-        with open(os.path.join(BASEPATH, "Coda_v2_3_faulty_globalisation.txt")) as f:
+        with open(os.path.join(BASEPATH,
+                               "Coda_v2_3_faulty_globalisation.txt")) as f:
             content = f.read()
         statements = parser.parse(content)
         eq_(len(statements), 1)
@@ -132,7 +135,8 @@ class TestParser(object):
         is considered as Normal (file contains only globalisation statemnts)
         """
         parser = Parser()
-        with open(os.path.join(BASEPATH, "Coda_v2_3_faulty_globalisation_2.txt")) as f:
+        with open(os.path.join(BASEPATH,
+                               "Coda_v2_3_faulty_globalisation_2.txt")) as f:
             content = f.read()
         statements = parser.parse(content)
         eq_(len(statements), 1)
@@ -157,7 +161,8 @@ class TestParser(object):
                 eq_(mv.type, MovementRecordType.GLOBALISATION)
             else:
                 eq_(mv.type, MovementRecordType.NORMAL)
-        with open(os.path.join(BASEPATH, "Coda_v2_3_globalisation_2.txt")) as f:
+        with open(os.path.join(BASEPATH,
+                               "Coda_v2_3_globalisation_2.txt")) as f:
             content = f.read()
         statements = parser.parse(content)
         assert len(statements) == 1
@@ -173,12 +178,13 @@ class TestParser(object):
         with assert_raises(CodaParserException) as cm:
             parser.parse(content)
         eq_(cm.exception.code, ' R001')
-        eq_(cm.exception.msg, 'CODA V5 statements are not supported, please contact your bank')
+        eq_(cm.exception.msg,
+            'CODA V5 statements are not supported, please contact your bank')
 
     def test_parse_methods(self):
         parser = Parser()
         # test a invalid file name
-        with assert_raises(ValueError) as cm:
+        with assert_raises(ValueError):
             parser.parse_file('invalid_file_name')
         # test parsing from a path to a file
         parser = Parser()
@@ -188,7 +194,7 @@ class TestParser(object):
 
         # test parsing from a file-like object
         parser = Parser()
-        with open(os.path.join(file_name)) as f:
+        with open(os.path.join(file_name)):
             statements = parser.parse_file(file_name)
             eq_(len(statements), 1)
 

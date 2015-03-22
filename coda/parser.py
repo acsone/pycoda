@@ -67,10 +67,10 @@ class Parser(object):
         return re.match(r'0{5}\d{9}05[ D] {7}', value) is not None
 
     def parse_file(self, fp):
-        """ Parse the given file.
+        """ Parse the given file
          :param: fp: the path to the file to parse or a valid file-like object
          :returms: return a list of Statement objects found in the input file
-         :rtype: list 
+         :rtype: list
         """
         if hasattr(fp, 'read'):
             return self.parse(fp.read())
@@ -135,7 +135,8 @@ class Parser(object):
         statement.version = version = line[127]
         if version not in ['1', '2']:
             raise CodaParserException(
-                ' R001', 'CODA V%s statements are not supported, please contact your bank' % statement.version)
+                ' R001', 'CODA V%s statements are not supported, please '
+                'contact your bank' % statement.version)
         statement.creation_date = time.strftime(
             self.date_format, time.strptime(rmspaces(line[5:11]), '%d%m%y'))
         statement.separate_application = rmspaces(line[83:88])
@@ -150,13 +151,15 @@ class Parser(object):
                 statement.currency = rmspaces(line[18:21])
             elif line[1] == '1':  # foreign bank account BBAN structure
                 raise CodaParserException(
-                    ' R1001', 'Foreign bank accounts with BBAN structure are not supported ')
+                    ' R1001', 'Foreign bank accounts with BBAN structure are '
+                    'not supported ')
             elif line[1] == '2':  # Belgian bank account IBAN structure
                 statement.acc_number = rmspaces(line[5:21])
                 statement.currency = rmspaces(line[39:42])
             elif line[1] == '3':  # foreign bank account IBAN structure
                 raise CodaParserException(
-                    ' R1002', 'Foreign bank accounts with IBAN structure are not supported ')
+                    ' R1002', 'Foreign bank accounts with IBAN structure are '
+                    'not supported ')
             else:  # Something else, not supported
                 raise CodaParserException(
                     ' R1003', 'Unsupported bank account structure ')
@@ -182,7 +185,8 @@ class Parser(object):
             record.transaction_amount = float(rmspaces(line[32:47])) / 1000
             record.transaction_type = int(line[53])
             record.transaction_date = time.strftime(
-                self.date_format, time.strptime(rmspaces(line[47:53]), '%d%m%y'))
+                self.date_format, time.strptime(
+                    rmspaces(line[47:53]), '%d%m%y'))
             record.transaction_family = rmspaces(line[54:56])
             record.transaction_code = rmspaces(line[56:58])
             record.transaction_category = rmspaces(line[58:61])
@@ -196,7 +200,8 @@ class Parser(object):
                 # Non-structured communication
                 record.communication = rmspaces(line[62:115])
             record.entry_date = time.strftime(
-                self.date_format, time.strptime(rmspaces(line[115:121]), '%d%m%y'))
+                self.date_format, time.strptime(
+                    rmspaces(line[115:121]), '%d%m%y'))
             record.type = MovementRecordType.NORMAL
 
             if record.transaction_type in [1, 2, 3]:
@@ -253,7 +258,8 @@ class Parser(object):
         else:
             # movement data record 2.x (x != 1,2,3)
             raise CodaParserException(
-                'R2006', '\nMovement data records of type 2.%s are not supported ' % line[1])
+                'R2006', '\nMovement data records of type 2.%s are not '
+                'supported ' % line[1])
 
     def _parseInformationRecord(self, line, statement):
         if line[1] == '1':
@@ -307,5 +313,3 @@ def join_communications(c1, c2):
 
 def rmspaces(s):
     return " ".join(s.split())
-
-# vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
