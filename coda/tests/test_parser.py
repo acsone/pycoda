@@ -119,7 +119,7 @@ class TestParser(object):
         with open(os.path.join(BASEPATH, "Coda_v2_3_faulty_globalisation.txt")) as f:
             content = f.read()
         statements = parser.parse(content)
-        assert len(statements) == 1
+        eq_(len(statements), 1)
         statement = statements[0]
         eq_(len(statement.movements), 11)
         for mv in statement.movements:
@@ -135,7 +135,7 @@ class TestParser(object):
         with open(os.path.join(BASEPATH, "Coda_v2_3_faulty_globalisation_2.txt")) as f:
             content = f.read()
         statements = parser.parse(content)
-        assert len(statements) == 1
+        eq_(len(statements), 1)
         statement = statements[0]
         eq_(len(statement.movements), 2)
         for mv in statement.movements:
@@ -149,7 +149,7 @@ class TestParser(object):
         with open(os.path.join(BASEPATH, "Coda_v2_3_globalisation.txt")) as f:
             content = f.read()
         statements = parser.parse(content)
-        assert len(statements) == 1
+        eq_(len(statements), 1)
         statement = statements[0]
         eq_(len(statement.movements), 5)
         for idx, mv in enumerate(statement.movements):
@@ -175,4 +175,25 @@ class TestParser(object):
         eq_(cm.exception.code, ' R001')
         eq_(cm.exception.msg, 'CODA V5 statements are not supported, please contact your bank')
 
-# vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
+    def test_parse_methods(self):
+        parser = Parser()
+        # test a invalid file name
+        with assert_raises(ValueError) as cm:
+            parser.parse_file('invalid_file_name')
+        # test parsing from a path to a file
+        parser = Parser()
+        file_name = os.path.join(BASEPATH, "Coda_v2_3_single_statement.txt")
+        statements = parser.parse_file(file_name)
+        eq_(len(statements), 1)
+
+        # test parsing from a file-like object
+        parser = Parser()
+        with open(os.path.join(file_name)) as f:
+            statements = parser.parse_file(file_name)
+            eq_(len(statements), 1)
+
+        # test parsing an invalid content
+        with assert_raises(ValueError) as cm:
+            parser.parse('invalid_coda_content')
+        ex = cm.exception
+        eq_(ex.message, 'The given value is not a valid coda content')

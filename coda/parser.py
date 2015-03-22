@@ -26,7 +26,8 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #
 #
-
+import re
+import os
 import time
 from statement import Statement
 from coda.statement import MovementRecord, MovementRecordType, InformationRecord,\
@@ -55,7 +56,40 @@ class Parser(object):
     def __init__(self, date_format='%Y-%m-%d'):
         self.date_format = date_format
 
+    def is_valid_coda(self, value):
+        """ Check if the given value is a valid coda content
+        :param: value: data to parse
+        :type param: str
+        :returms: True id valid False otherwise
+        """
+        # Matches the first 24 characters of a CODA file, as defined by
+        # the febelfin specifications
+        return re.match(r'0{5}\d{9}05[ D] {7}', value) is not None
+
+    def parse_file(self, fp):
+        """ Parse the given file.
+         :param: fp: the path to the file to parse or a valid file-like object
+         :returms: return a list of Statement objects found in the input file
+         :rtype: list 
+        """
+        if hasattr(fp, 'read'):
+            return self.parse(fp.read())
+        elif os.path.exists(fp):
+            with open(fp) as f:
+                return self.parse(f.read())
+        else:
+            raise ValueError('The given argument is not a valid file-like '
+                             'object nor a valid path to an existing file.')
+
     def parse(self, value):
+        """Parse the given value.
+        :param: value: data to parse
+        :type param: str
+        :returms: return a list of Statement objects found in value
+         :rtype: list
+        """
+        if not self.is_valid_coda(value):
+            raise ValueError('The given value is not a valid coda content')
         recordlist = unicode(value, 'windows-1252', 'strict').split('\n')
         statements = []
         statement = None
