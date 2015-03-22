@@ -189,8 +189,8 @@ class Parser(object):
             record = statement.movements[-1]
             if record.ref[0:4] != line[2:6]:
                 raise CodaParserException(
-                    'R2004', 'CODA parsing error on movement data record 2.2, seq nr %s!'
-                    ' Please report this issue via your OpenERP support channel.' % line[2:10])
+                    'R2004', 'CODA parsing error on movement data record 2.2, '
+                    'seq nr %s!' % line[2:10])
             record.communication = join_communications(
                 record.communication, rmspaces(line[10:63]))
             record.payment_reference = rmspaces(line[63:98])
@@ -199,8 +199,8 @@ class Parser(object):
             record = statement.movements[-1]
             if record.ref[0:4] != line[2:6]:
                 raise CodaParserException(
-                    'R2005', 'CODA parsing error on movement data record 2.3, seq nr %s!'
-                    ' Please report this issue via your OpenERP support channel.' % line[2:10])
+                    'R2005', 'CODA parsing error on movement data record 2.3, '
+                    'eq nr %s!' % line[2:10])
             if statement.version == '1':
                 record.counterparty_number = rmspaces(line[10:22])
                 record.counterparty_name = rmspaces(line[47:73])
@@ -236,15 +236,15 @@ class Parser(object):
             infoLine = statement.informations[-1]
             if infoLine.ref != rmspaces(line[2:10]):
                 raise CodaParserException(
-                    'R3004', 'CODA parsing error on information data record 3.2, seq nr %s!'
-                    ' Please report this issue via your OpenERP support channel.' % line[2:10])
+                    'R3004', 'CODA parsing error on information data '
+                    'record 3.2, seq nr %s!' % line[2:10])
             infoLine.communication += rmspaces(line[10:100])
         elif line[1] == '3':
             infoLine = statement.informations[-1]
             if infoLine.ref != rmspaces(line[2:10]):
                 raise CodaParserException(
-                    'R3005', 'CODA parsing error on information data record 3.3, seq nr %s!'
-                    ' Please report this issue via your OpenERP support channel.' % line[2:10])
+                    'R3005', 'CODA parsing error on information data '
+                    'record 3.3, seq nr %s!' % line[2:10])
             infoLine.communication += rmspaces(line[10:100])
 
     def _parseNewBalanceRecord(self, line, statement):
