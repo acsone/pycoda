@@ -29,8 +29,7 @@
 import re
 import os
 import time
-from statement import Statement
-from coda.statement import MovementRecord, MovementRecordType, InformationRecord,\
+from coda.statement import Statement, MovementRecord, MovementRecordType, InformationRecord,\
     FreeCommunication
 
 
