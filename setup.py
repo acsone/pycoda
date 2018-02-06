@@ -2,7 +2,7 @@ import os
 import sys
 from setuptools import setup, find_packages
 
-version = '0.5dev'
+version = '0.5'
 
 if sys.version_info < (2, 6):
     sys.stderr.write("This package requires Python 2.6 or newer. "
@@ -15,7 +15,7 @@ setup(
     name='pycoda',
     version=version,
     author='ACSONE SA/NV',
-    author_email='laurent.mignon__at__acsone.eu',
+    author_email='laurent.mignon@acsone.eu',
     description="Python library for Coded statement of account (CODA) ",
     long_description='\n'.join((
         open('README.rst').read(),
