@@ -1,10 +1,10 @@
 Changes
 ~~~~~~~
  
-0.5 (unreleased)
+0.5 (2018-02-06)
 ----------------
 
-- ...
+- Add support for foreign account number.
 
 
 0.4 (2015-02-26)
