@@ -157,9 +157,9 @@ class Parser(object):
                 statement.acc_number = rmspaces(line[5:21])
                 statement.currency = rmspaces(line[39:42])
             elif line[1] == '3':  # foreign bank account IBAN structure
-                raise CodaParserException(
-                    ' R1002', 'Foreign bank accounts with IBAN structure are '
-                    'not supported ')
+                _val = line[5:42]
+                statement.acc_number = rmspaces(_val[:-3])
+                statement.currency = rmspaces(_val[-3:])
             else:  # Something else, not supported
                 raise CodaParserException(
                     ' R1003', 'Unsupported bank account structure ')
