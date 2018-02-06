@@ -26,12 +26,12 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #
 #
-import re
 import os
+import re
 import time
-from statement import Statement
-from coda.statement import MovementRecord, MovementRecordType, InformationRecord,\
-    FreeCommunication
+
+from .statement import MovementRecord, MovementRecordType, InformationRecord, \
+    FreeCommunication, Statement
 
 
 class CodaParserException(Exception):
@@ -157,9 +157,9 @@ class Parser(object):
                 statement.acc_number = rmspaces(line[5:21])
                 statement.currency = rmspaces(line[39:42])
             elif line[1] == '3':  # foreign bank account IBAN structure
-                raise CodaParserException(
-                    ' R1002', 'Foreign bank accounts with IBAN structure are '
-                    'not supported ')
+                _val = line[5:42]
+                statement.acc_number = rmspaces(_val[:-3])
+                statement.currency = rmspaces(_val[-3:])
             else:  # Something else, not supported
                 raise CodaParserException(
                     ' R1003', 'Unsupported bank account structure ')

@@ -203,3 +203,12 @@ class TestParser(object):
             parser.parse('invalid_coda_content')
         ex = cm.exception
         eq_(ex.message, 'The given value is not a valid coda content')
+
+    def test_foreign_account(self):
+        parser = Parser()
+        file_name = os.path.join(BASEPATH, "Coda_foreign_account.txt")
+        statements = parser.parse_file(file_name)
+        eq_(len(statements), 1)
+        st = statements[0]
+        eq_(st.acc_number, 'FR1234567890240924002304825')
+        eq_(st.currency, 'EUR')
