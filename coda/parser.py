@@ -26,12 +26,12 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #
 #
-import re
 import os
+import re
 import time
-from statement import Statement
-from coda.statement import MovementRecord, MovementRecordType, InformationRecord,\
-    FreeCommunication
+
+from .statement import MovementRecord, MovementRecordType, InformationRecord, \
+    FreeCommunication, Statement
 
 
 class CodaParserException(Exception):
