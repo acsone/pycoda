@@ -75,7 +75,7 @@ class Parser(object):
         if hasattr(fp, 'read'):
             return self.parse(fp.read())
         elif os.path.exists(fp):
-            with open(fp) as f:
+            with open(fp, 'rb') as f:
                 return self.parse(f.read())
         else:
             raise ValueError('The given argument is not a valid file-like '
@@ -84,13 +84,14 @@ class Parser(object):
     def parse(self, value):
         """Parse the given value.
         :param: value: data to parse
-        :type param: str
+        :type param: bytes
         :returms: return a list of Statement objects found in value
          :rtype: list
         """
-        if not self.is_valid_coda(value):
+        value_unicode = value.decode('windows-1252', 'strict')
+        if not self.is_valid_coda(value_unicode):
             raise ValueError('The given value is not a valid coda content')
-        recordlist = value.decode('windows-1252', 'strict').split('\n')
+        recordlist = value_unicode.split('\n')
         statements = []
         statement = None
         for line in recordlist:
