@@ -90,7 +90,7 @@ class Parser(object):
         """
         if not self.is_valid_coda(value):
             raise ValueError('The given value is not a valid coda content')
-        recordlist = unicode(value, 'windows-1252', 'strict').split('\n')
+        recordlist = value.decode('windows-1252', 'strict').split('\n')
         statements = []
         statement = None
         for line in recordlist:
