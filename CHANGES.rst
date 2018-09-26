@@ -1,10 +1,10 @@
 Changes
 ~~~~~~~
 
-0.6 (unreleased)
+1.0 (2018-09-26)
 ----------------
 
-- ...
+- Compatible python 3 (tested with 3.5)
 
 
 0.5 (2018-02-06)

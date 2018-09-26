@@ -2,7 +2,7 @@ import os
 import sys
 from setuptools import setup, find_packages
 
-version = '0.6dev'
+version = '1.0.0'
 
 if sys.version_info < (2, 6):
     sys.stderr.write("This package requires Python 2.6 or newer. "
@@ -39,5 +39,6 @@ setup(
         'Topic :: Text Processing',
         'Topic :: Text Processing :: Markup',
         'Programming Language :: Python :: 2',
+        'Programming Language :: Python :: 3.5',
     ],
 )
