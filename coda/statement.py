@@ -82,6 +82,12 @@ class InformationRecord(object):
 
     def __init__(self):
         self.ref = None
+        # Continuous sequence number: must be identical to
+        # the continuous sequence number of the movement
+        # record to which the information record refers.
+        self.ref_move = None
+        # Detail number 
+        self.ref_move_detail = None
         self.transaction_ref = None
         self.transaction_type = None
         self.transaction_family = None

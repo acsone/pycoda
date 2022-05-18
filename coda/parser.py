@@ -266,6 +266,8 @@ class Parser(object):
         if line[1] == '1':
             infoLine = InformationRecord()
             infoLine.ref = rmspaces(line[2:10])
+            infoLine.ref_move = rmspaces(line[2:6])
+            infoLine.ref_move_detail = rmspaces(line[6:10])
             infoLine.transaction_ref = rmspaces(line[10:31])
             infoLine.transaction_type = line[31]
             infoLine.transaction_family = rmspaces(line[32:34])
