@@ -1,13 +1,15 @@
 Changes
 ~~~~~~~
 
-1.? (unreleased)
-----------------
-- ...
+1.1.0 (2022-05-18)
+------------------
+- `github PR11 <https://github.com/acsone/pycoda/pull/11>`_:
+  Store the move reference and the move reference detail into separate fields
+  to ease reconciliation.
 
 
 1.0.0 (2018-09-26)
-----------------
+------------------
 
 - Compatible python 3 (tested with 3.5)
 
